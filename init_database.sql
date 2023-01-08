@@ -1,5 +1,6 @@
 /* Borramos todas las tablas */
 DROP TABLE IF EXISTS Gimnasio; 
+DROP TABLE IF EXISTS Asistencia; 
 DROP TABLE IF EXISTS Clase;
 DROP TABLE IF EXISTS Pago;
 DROP TABLE IF EXISTS Alimentacion;
@@ -8,6 +9,7 @@ DROP TABLE IF EXISTS Merchandising;
 DROP TABLE IF EXISTS Producto CASCADE;
 DROP TABLE IF EXISTS Monitor; 
 DROP TABLE IF EXISTS Socio;
+DROP TABLE IF EXISTS Maquina;
 DROP TABLE IF EXISTS Usuario CASCADE; 
 
 /* 
@@ -129,4 +131,26 @@ CREATE TABLE IF NOT EXISTS Merchandising (
    nombre VARCHAR(20) NOT NULL,
    talla VARCHAR(10),
    FOREIGN KEY (prod_id) REFERENCES Producto (prod_id)
+);
+
+/* 
+ * Tabla Asistencia: registra la asistencia de los socios a las instalaciones
+ */
+
+CREATE TABLE IF NOT EXISTS Asistencia (
+   dni_socio VARCHAR(9) PRIMARY KEY,
+   fecha DATE NOT NULL,
+   hora_entrada TIME NOT NULL,
+   hora_salida TIME NOT NULL,
+   FOREIGN KEY (dni_socio) REFERENCES Socio (dni_socio)
+);
+
+/* 
+ * Tabla Maquina: registra las maquinas que el gimnasio posee
+ */
+
+CREATE TABLE IF NOT EXISTS Maquina (
+   id_maquina INT PRIMARY KEY,
+   fabricante VARCHAR(30),
+   tipo VARCHAR(30)
 );
