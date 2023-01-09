@@ -1,4 +1,4 @@
-### AUTHORS
+### AUTHORS:
 ÁNGEL AUGUSTO CAPOTE PÉREZ
 (alu0101349404@ull.edu.es)
 
