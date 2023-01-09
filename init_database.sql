@@ -1,16 +1,15 @@
 /* Borramos todas las tablas */
-DROP TABLE IF EXISTS Gimnasio; 
+DROP TABLE IF EXISTS Trabaja;
+DROP TABLE IF EXISTS Subscrito;
 DROP TABLE IF EXISTS Asistencia; 
 DROP TABLE IF EXISTS Clase;
 DROP TABLE IF EXISTS Pago;
-DROP TABLE IF EXISTS Alimentacion;
-DROP TABLE IF EXISTS Accesorio;
-DROP TABLE IF EXISTS Merchandising;
+DROP TABLE IF EXISTS Ofrece;
 DROP TABLE IF EXISTS Producto CASCADE;
 DROP TABLE IF EXISTS Monitor; 
 DROP TABLE IF EXISTS Socio;
 DROP TABLE IF EXISTS Maquina;
-DROP TABLE IF EXISTS Usuario CASCADE; 
+DROP TABLE IF EXISTS Gimnasio; 
 
 /* 
  * Tabla Gimnasio: registra los diferentes ginmasios de la misma dueña,
@@ -18,47 +17,38 @@ DROP TABLE IF EXISTS Usuario CASCADE;
  * nombre, la cantidad de socios que tiene etc. 
  */
 
- CREATE TABLE IF NOT EXISTS Gimnasio (
-    id INT PRIMARY KEY,
-    nombre VARCHAR(20) NOT NULL,
-    direccion VARCHAR(50) NOT NULL,
-    no_plantas INT NOT NULL,
-    n_socios INT NOT NULL
- );
-
-
-/* 
- * Tabla Usuairio: registra a las personas que están en el gimnasio, 
- * estas personas pueden ser socios o monitores del gimnasio.
- */
-
-CREATE TABLE IF NOT EXISTS Usuario (
-  dni VARCHAR(9) PRIMARY KEY,
-  nombre VARCHAR(255) NOT NULL,
-  n_telefono INT NOT NULL,
-  correo VARCHAR(255)
+CREATE TABLE IF NOT EXISTS Gimnasio (
+   id INT PRIMARY KEY,
+   nombre VARCHAR(45) NOT NULL,
+   direccion VARCHAR(45) NOT NULL,
+   no_plantas INT NOT NULL,
+   n_socios INT NOT NULL
 );
 
+
 /* 
- * Tabla Monitor: registra el dni de los usuarios que son a su vez
- * monitores del gimnasio
+ * Tabla Monitor: registra a los monitores
  */
 
 
 CREATE TABLE IF NOT EXISTS Monitor (
-  dni_monitor VARCHAR(9) PRIMARY KEY,
-  FOREIGN KEY (dni_monitor) REFERENCES Usuario(dni)
+  dni VARCHAR(9) PRIMARY KEY,
+  nombre VARCHAR(45) NOT NULL,
+  n_telefono VARCHAR(45) NOT NULL,
+  hora_entrada TIME,
+  hora_salida TIME,
+  salario INT
 );
 
 /* 
- * Tabla Socio: registra el dni de los usuarios que son a su vez
- * socios del gimnasio
+ * Tabla Socio: registra los socios de la cadena de gimnasios
  */
 
-
 CREATE TABLE IF NOT EXISTS Socio (
-  dni_socio VARCHAR(9) PRIMARY KEY,
-  FOREIGN KEY (dni_socio) REFERENCES Usuario(dni)
+  dni VARCHAR(9) PRIMARY KEY,
+  nombre VARCHAR(45) NOT NULL,
+  n_telefono VARCHAR(45) NOT NULL,
+  id_socio INT
 );
 
 /*
@@ -69,8 +59,8 @@ CREATE TABLE IF NOT EXISTS Pago (
   dni VARCHAR(9) PRIMARY KEY,
   tarifa FLOAT NOT NULL,
   fecha DATE NOT NULL,
-  metodo_pago VARCHAR(20),
-  FOREIGN KEY (dni) REFERENCES Socio(dni_socio)
+  metodo_pago VARCHAR(45) NOT NULL,
+  FOREIGN KEY (dni) REFERENCES Socio(dni)
 );
 
 /* 
@@ -80,10 +70,13 @@ CREATE TABLE IF NOT EXISTS Pago (
  */
 
 CREATE TABLE IF NOT EXISTS Clase (
-   deporte VARCHAR(15) PRIMARY KEY,
+   id_gimnasio INT,
+   deporte VARCHAR(45),
    dni_monitor VARCHAR(9) NOT NULL,
-   horario TIME NOT NULL,
-   FOREIGN KEY (dni_monitor) REFERENCES Monitor (dni_monitor)
+   hora_inicio TIME NOT NULL,
+   hora_fin TIME NOT NULL,
+   FOREIGN KEY (id_gimnasio) REFERENCES Gimnasio (id),
+   FOREIGN KEY (dni_monitor) REFERENCES Monitor (dni)
 );
 
 /* 
@@ -94,43 +87,11 @@ CREATE TABLE IF NOT EXISTS Clase (
 CREATE TABLE IF NOT EXISTS Producto (
    prod_id INT PRIMARY KEY,
    stock INT NOT NULL,
-   nombre VARCHAR(20) NOT NULL,
-   fabricante VARCHAR(15),
+   nombre VARCHAR(45) NOT NULL,
+   fabricante VARCHAR(45),
+   tipo VARCHAR(45),
+   talla INT,
    precio FLOAT NOT NULL
-);
-
-/* 
- * Tabla Alimentación: registra los productos que tienen que ver con la 
- * alimentación, como barritas, batidos, etc.
- */
-
-CREATE TABLE IF NOT EXISTS Alimentacion (
-   prod_id INT PRIMARY KEY,
-   nombre VARCHAR(20) NOT NULL,
-   FOREIGN KEY (prod_id) REFERENCES Producto (prod_id)
-);
-
-/* 
- * Tabla Accesorio: registra los productos que tienen que ver con los 
- * accesorios de entrenamiento, como straps, cinturones, etc.
- */
-
-CREATE TABLE IF NOT EXISTS Accesorio (
-   prod_id INT PRIMARY KEY,
-   nombre VARCHAR(20) NOT NULL,
-   FOREIGN KEY (prod_id) REFERENCES Producto (prod_id)
-);
-
-/* 
- * Tabla Merchandising: registra los productos que tienen que ver con los 
- * artículos de merchandising del gimnasio, como camisetas, pulseras, etc.
- */
-
-CREATE TABLE IF NOT EXISTS Merchandising (
-   prod_id INT PRIMARY KEY,
-   nombre VARCHAR(20) NOT NULL,
-   talla VARCHAR(10),
-   FOREIGN KEY (prod_id) REFERENCES Producto (prod_id)
 );
 
 /* 
@@ -142,7 +103,7 @@ CREATE TABLE IF NOT EXISTS Asistencia (
    fecha DATE NOT NULL,
    hora_entrada TIME NOT NULL,
    hora_salida TIME NOT NULL,
-   FOREIGN KEY (dni_socio) REFERENCES Socio (dni_socio)
+   FOREIGN KEY (dni_socio) REFERENCES Socio (dni)
 );
 
 /* 
@@ -151,6 +112,41 @@ CREATE TABLE IF NOT EXISTS Asistencia (
 
 CREATE TABLE IF NOT EXISTS Maquina (
    id_maquina INT PRIMARY KEY,
-   fabricante VARCHAR(30),
-   tipo VARCHAR(30)
+   id_gimnasio INT NOT NULL,
+   fabricante VARCHAR(45) NOT NULL,
+   tipo VARCHAR(45) NOT NULL,
+   FOREIGN KEY (id_gimnasio) REFERENCES Gimnasio (id)
+);
+
+/* 
+ * Tabla Subscrito: registra los socios que están subscritos a un gimnasio
+ */
+
+CREATE TABLE IF NOT EXISTS Subscrito (
+   dni_socio VARCHAR(9),
+   id_gimnasio INT,
+   FOREIGN KEY (id_gimnasio) REFERENCES Gimnasio (id),
+   FOREIGN KEY (dni_socio) REFERENCES Socio (dni)
+);
+
+/* 
+ * Tabla Trabaja: registra los monitores que trabajan en un gimnasio
+ */
+
+CREATE TABLE IF NOT EXISTS Trabaja (
+   dni_monitor VARCHAR(9),
+   id_gimnasio INT,
+   FOREIGN KEY (id_gimnasio) REFERENCES Gimnasio (id),
+   FOREIGN KEY (dni_monitor) REFERENCES Monitor (dni)
+);
+
+/*
+ * Tabla Ofrece: Registra los productos que un gimnasio ofrece
+ */
+
+CREATE TABLE IF NOT EXISTS Ofrece (
+   id_gimnasio INT NOT NULL,
+   prod_id INT NOT NULL,
+   FOREIGN KEY (id_gimnasio) REFERENCES Gimnasio (id),
+   FOREIGN KEY (prod_id) REFERENCES Producto (prod_id)
 );
