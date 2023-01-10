@@ -17,7 +17,7 @@ def get_db_connection():
 def index():
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute('SELECT * FROM Gimnasio;')
+    cur.execute('SELECT * FROM Socio;')
     vals = cur.fetchall()
     cur.close()
     conn.close()
@@ -26,3 +26,59 @@ def index():
 @app.route('/about/', methods=('GET', 'POST'))
 def about():
     return render_template('about.html')
+
+@app.route('/create/', methods=('GET', 'POST'))
+def create():
+    if request.method == 'POST':
+        dni = request.form['dni']
+        name = request.form['name']
+        tlf = int(request.form['tlf'])
+        id = int(request.form['id'])
+
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute('INSERT INTO Socio (dni, nombre, n_telefono, id_socio)'
+                    'VALUES (%s, %s, %s, %s)',
+                    (dni, name, tlf, id))
+        conn.commit()
+        cur.close()
+        conn.close()
+        return redirect(url_for('index'))
+    return render_template('create.html')
+
+@app.route('/patch/', methods=['GET', 'POST'])
+def patch():
+
+    sql = """UPDATE Socio SET nombre = %s, n_telefono = %s WHERE dni = %s"""
+
+    if request.method == 'POST':
+        dni = request.form['dni']
+        name = request.form['name']
+        tlf = int(request.form['tlf'])
+
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute(sql,(name, tlf, dni))
+        conn.commit()
+        cur.close()
+        conn.close()
+        return redirect(url_for('index'))
+
+    return render_template('patch.html')
+
+@app.route('/delete/', methods=['GET', 'POST'])
+def delete():
+
+    sql = """ DELETE FROM Socio WHERE id_socio = %s """
+    if request.method == 'POST':
+        id = request.form['id']
+
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute(sql,(id))
+        conn.commit()
+        cur.close()
+        conn.close()
+        return redirect(url_for('index'))
+
+    return render_template('delete.html')

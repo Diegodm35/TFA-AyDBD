@@ -1,33 +1,30 @@
 ﻿{% extends 'base.html' %}
 
 {% block content %}
-    <h1>{% block title %} Añadir nuevo socio al sistema {% endblock %}</h1>
+    <h1>{% block title %} Actualizar información de un socio {% endblock %}</h1>
     <form method="post">
+        <p> 
+            *Tengamos en cuenta que a los usuarios solo se les podrá cambiar su Nombre y
+            número de teléfono*
+        </p>
         <p>
-            <label for="dni">DNI del nuevo socio:  </label>
+            <label for="dni">DNI del socio que quieres actualizar:  </label>
             <input type="text" name="dni"
                    placeholder="DNI">
             </input>
         </p>
 
         <p>
-            <label for="name">Nombre del nuevo socio: </label>
+            <label for="name"> Nombre nuevo del socio: </label>
             <input type="text" name="name"
                    placeholder="Nombre">
             </input>
         </p>
 
         <p>
-            <label for="tlf"> Número de teléfono: </label>
+            <label for="tlf"> Teléfono nuevo del socio: </label>
             <input type="number" name="tlf"
                    placeholder="Número">
-            </input>
-        </p>
-
-        <p>
-            <label for="id"> Id de socio </label>
-            <input type="number" name="id"
-                   placeholder="Id">
             </input>
         </p>
         

@@ -1,12 +1,12 @@
 ﻿{% extends 'base.html' %}
 
 {% block content %}
-    <h1>{% block title %} Gimnasios registrados {% endblock %}</h1>
+    <h1>{% block title %} Clientes suscritos {% endblock %}</h1>
     {% for val in vals %}
         <div class='val'>
-            <h3>#{{ val[0] }} - {{ val[1] }} - {{ val[2] }}</h3>
-            <p> Plantas: {{ val[3] }} </p>
-            <p> Número de socios: {{ val[4] }} </p>
+            <h3>#{{ val[3] }} - {{ val[1] }} </h3>
+            <p> Teléfono: {{ val[2] }} </p>
+            <p> DNI: {{ val[0] }} </p>
         </div>
     {% endfor %}
 {% endblock %}
