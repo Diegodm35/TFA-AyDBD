@@ -1,6 +1,6 @@
-import os
+import time
 import psycopg2
-from flask import Flask, render_template, request, url_for, redirect
+from flask import Flask, render_template, request, url_for, redirect, jsonify
 
 app = Flask(__name__)
 
@@ -29,56 +29,68 @@ def about():
 
 @app.route('/create/', methods=('GET', 'POST'))
 def create():
-    if request.method == 'POST':
-        dni = request.form['dni']
-        name = request.form['name']
-        tlf = int(request.form['tlf'])
-        id = int(request.form['id'])
+    try:
+        if request.method == 'POST':
+            dni = request.form['dni']
+            name = request.form['name']
+            tlf = int(request.form['tlf'])
+            id = int(request.form['id'])
 
-        conn = get_db_connection()
-        cur = conn.cursor()
-        cur.execute('INSERT INTO Socio (dni, nombre, n_telefono, id_socio)'
-                    'VALUES (%s, %s, %s, %s)',
-                    (dni, name, tlf, id))
-        conn.commit()
-        cur.close()
-        conn.close()
-        return redirect(url_for('index'))
-    return render_template('create.html')
+            conn = get_db_connection()
+            cur = conn.cursor()
+            cur.execute('INSERT INTO Socio (dni, nombre, n_telefono, id_socio)'
+                        'VALUES (%s, %s, %s, %s)',
+                        (dni, name, tlf, id))
+            conn.commit()
+            cur.close()
+            conn.close()
+            return redirect(url_for('index'))
+        return render_template('create.html')
+    
+    except Exception as e:
+        return jsonify(error=str(e)), 500
 
 @app.route('/patch/', methods=['GET', 'POST'])
 def patch():
 
-    sql = """UPDATE Socio SET nombre = %s, n_telefono = %s WHERE dni = %s"""
+    try:
+        sql = """UPDATE Socio SET nombre = %s, n_telefono = %s WHERE dni = %s"""
 
-    if request.method == 'POST':
-        dni = request.form['dni']
-        name = request.form['name']
-        tlf = int(request.form['tlf'])
+        if request.method == 'POST':
+            dni = request.form['dni']
+            name = request.form['name']
+            tlf = int(request.form['tlf'])
 
-        conn = get_db_connection()
-        cur = conn.cursor()
-        cur.execute(sql,(name, tlf, dni))
-        conn.commit()
-        cur.close()
-        conn.close()
-        return redirect(url_for('index'))
+            conn = get_db_connection()
+            cur = conn.cursor()
+            cur.execute(sql,(name, tlf, dni))
+            conn.commit()
+            cur.close()
+            conn.close()
+            return redirect(url_for('index'))
 
-    return render_template('patch.html')
+        return render_template('patch.html')
+    
+    except Exception as e:
+        return jsonify(error=str(e)), 500
 
 @app.route('/delete/', methods=['GET', 'POST'])
 def delete():
 
-    sql = """ DELETE FROM Socio WHERE id_socio = %s """
-    if request.method == 'POST':
-        id = request.form['id']
+    try:
+        sql = """ DELETE FROM Socio WHERE id_socio = %s """
+        if request.method == 'POST':
+            id = request.form['id']
 
-        conn = get_db_connection()
-        cur = conn.cursor()
-        cur.execute(sql,(id))
-        conn.commit()
-        cur.close()
-        conn.close()
-        return redirect(url_for('index'))
+            conn = get_db_connection()
+            cur = conn.cursor()
+            cur.execute(sql,(id))
+            conn.commit()
+            cur.close()
+            conn.close()
+            return redirect(url_for('index'))
 
-    return render_template('delete.html')
+        return render_template('delete.html')
+    
+    except Exception as e:
+        return jsonify(error=str(e)), 500
