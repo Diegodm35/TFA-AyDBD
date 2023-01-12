@@ -28,4 +28,4 @@ CHECK (Horario_fin > Horario_inicio);
 
 ALTER TABLE monitor
 ADD CONSTRAINT monitor_schedule
-CHECK (Horario_inicio > Horario_salida);
+CHECK (Hora_inicio > Hora_salida);
