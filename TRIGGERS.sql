@@ -2,7 +2,7 @@
 CREATE OR REPLACE FUNCTION new_register() RETURNS TRIGGER AS $new_register$
     BEGIN
         UPDATE SOCIO 
-				SET new.NUMERO_SOCIO = 1 + (SELECT MAX(NUMERO_SOCIO) FROM SOCIO);
+        SET NUMERO_SOCIO = 1 + (SELECT MAX(NUMERO_SOCIO) FROM SOCIO);
     END;
 $new_register$ LANGUAGE plpgsql;
      
@@ -14,7 +14,7 @@ EXECUTE PROCEDURE new_register();
 CREATE OR REPLACE FUNCTION new_register() RETURNS TRIGGER AS $new_register$
     BEGIN
         UPDATE SOCIO 
-				SET new.NUMERO_SOCIO = (SELECT (MAX(NUMERO_SOCIO) - 1) FROM SOCIO);
+        SET new.NUMERO_SOCIO = (SELECT (MAX(NUMERO_SOCIO) - 1) FROM SOCIO);
     END;
 $new_register$ LANGUAGE plpgsql;
      
@@ -26,8 +26,8 @@ EXECUTE PROCEDURE new_register();
 CREATE OR REPLACE FUNCTION new_register() RETURNS TRIGGER AS $new_register$
     BEGIN
         UPDATE PRODUCTO 
-				SET NEW.PRECIO = PRECIO * 0.9
-				WHERE STOCK > 100;
+        SET PRECIO = PRECIO * 0.9
+        WHERE STOCK > 100;
     END;
 $new_register$ LANGUAGE plpgsql;
      
@@ -39,8 +39,8 @@ EXECUTE PROCEDURE new_register();
 CREATE OR REPLACE FUNCTION new_register() RETURNS TRIGGER AS $new_register$
     BEGIN
         UPDATE PAGO 
-				SET NEW.TARIFA = TARIFA * 0.75
-				WHERE TARIFA > 150;
+        SET TARIFA = TARIFA * 0.75
+        WHERE TARIFA > 150;
     END;
 $new_register$ LANGUAGE plpgsql;
      
@@ -53,8 +53,7 @@ CREATE OR REPLACE FUNCTION new_register() RETURNS TRIGGER AS $new_register$
     BEGIN
         DELETE FROM SUBSCRITO AS s
 				WHERE s.DNI = p.DNI AND 30 > CURRENT_DATE - (SELECT FECHA 
-																	 									 FROM PAGO AS p
-				);
+                                                             FROM PAGO AS p);
     END;
 $new_register$ LANGUAGE plpgsql;
      

@@ -24,7 +24,7 @@ CHECK (Hora_fin > Hora_inicio);
 
 ALTER TABLE socio
 ADD CONSTRAINT socio_tlf
-CHECK (N_telefono like '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]');
+CHECK (n_telefono like '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]');
 
 ALTER TABLE socio
 ADD CONSTRAINT socio_DNI
@@ -62,17 +62,12 @@ CHECK (Hora_salida > Hora_entrada);
 
 ALTER TABLE producto
 ADD CONSTRAINT product_type
-CHECK ((tipo = 'merchandising')or (tipo ='alimentacion') or (tipo ='accesorio'));
+CHECK ((tipo = 'MERCHANDISING') or (tipo = 'ALIMENTACION') or (tipo ='ACCESORIO'));
 
 ALTER TABLE producto
 ADD CONSTRAINT size_type
-CHECK (talla = 's')or (talla ='m') or (talla ='l') or (talla ='xl') or (talla = NULL);
+CHECK ((talla = 'S') or (talla ='M') or (talla = 'L') or (talla ='XL') or (talla = ''));
 
 ALTER TABLE clase
 ADD CONSTRAINT class_type
-CHECK ((deporte = 'yoga')or (deporte ='zumba') or (deporte ='boxeo') or (deporte ='spinning'));
-
-ALTER TABLE maquina
-ADD CONSTRAINT maquina_type
-CHECK ((tipo = 'cardio')or (tipo ='powerlifting') or (tipo ='banco'));
-
+CHECK ((deporte = 'YOGA') or (deporte ='ZUMBA') or (deporte = 'BOXEO') or (deporte = 'SPINNING'));
