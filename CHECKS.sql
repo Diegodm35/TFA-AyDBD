@@ -66,7 +66,7 @@ CHECK ((tipo = 'merchandising')or (tipo ='alimentacion') or (tipo ='accesorio'))
 
 ALTER TABLE producto
 ADD CONSTRAINT size_type
-CHECK ((talla = 's')or (talla ='m') or (talla ='l') or (talla ='xl') or (talla = NULL);
+CHECK (talla = 's')or (talla ='m') or (talla ='l') or (talla ='xl') or (talla = NULL);
 
 ALTER TABLE clase
 ADD CONSTRAINT class_type
