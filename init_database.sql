@@ -90,7 +90,7 @@ CREATE TABLE IF NOT EXISTS Producto (
    nombre VARCHAR(45) NOT NULL,
    fabricante VARCHAR(45),
    tipo VARCHAR(45),
-   talla INT,
+   talla VARCHAR(3),
    precio FLOAT NOT NULL
 );
 
