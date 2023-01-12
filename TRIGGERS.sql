@@ -1,20 +1,3 @@
-/*
-TRIGGERS
-*/
-
-
-/* socio que asiste está en el gimnasio
-*/
-ALTER TABLE asistencia
-ADD CONSTRAINT asistencia_socio
-CHECK (Numero_socio = SELECT Número_socio FROM SOCIO 
-	WHERE DNI AS (SELECT DNI FROM SUSCRITO 
-		WHERE SUSCRITO.GIMNASIO_Identificador = GIMNASIO_Identificador )
-
- Fecha_entrada);
-
-
-
 /*TRIGGERS */
 
 /* aumentar el contador de socios de un gimnasio al insertar   */
@@ -52,9 +35,33 @@ END;
 
 
 
+/*
+que los monitores trabajen 8 horas siempre
+*/
+CREATE TRIGGER jornada_laboral
+BEFORE INSERT OR UPDATE INSERT ON  monitor
+BEGIN
+	IF (new.Hora_entrada - new.Hora_salida) <= '08:00:00'
+		THEN
+			new.Hora_salida = (new.Hora_salida +('08:00:00' - (new.Hora_entrada - new.Hora_salida)))
+    END IF;
+END;
 
 
 
+
+
+/*
+si hay un stock de + 50, se reduce un 50% el precio 
+*/
+CREATE TRIGGER overStock
+BEFORE INSERT OR UPDATE ON stock
+BEGIN 
+	IF ( stock > 50)
+		THEN
+			new.Precio = (old.precio % 2)
+		END IF;
+	END;
 
 
 
