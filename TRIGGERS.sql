@@ -1,86 +1,63 @@
-/*
-TRIGGERS
-*/
+-- TRIGGER 1
+CREATE OR REPLACE FUNCTION new_register() RETURNS TRIGGER AS $new_register$
+    BEGIN
+        UPDATE SOCIO 
+				SET new.NUMERO_SOCIO = 1 + (SELECT MAX(NUMERO_SOCIO) FROM SOCIO);
+    END;
+$new_register$ LANGUAGE plpgsql;
+     
 
+CREATE TRIGGER increase_socio AFTER INSERT ON SOCIO
+EXECUTE PROCEDURE new_register();
 
-/* socio que asiste está en el gimnasio
-*/
-ALTER TABLE asistencia
-ADD CONSTRAINT asistencia_socio
-CHECK (Numero_socio = SELECT Número_socio FROM SOCIO 
-	WHERE DNI AS (SELECT DNI FROM SUSCRITO 
-		WHERE SUSCRITO.GIMNASIO_Identificador = GIMNASIO_Identificador )
+-- TRIGGER 2
+CREATE OR REPLACE FUNCTION new_register() RETURNS TRIGGER AS $new_register$
+    BEGIN
+        UPDATE SOCIO 
+				SET new.NUMERO_SOCIO = (SELECT (MAX(NUMERO_SOCIO) - 1) FROM SOCIO);
+    END;
+$new_register$ LANGUAGE plpgsql;
+     
 
- Fecha_entrada);
+CREATE TRIGGER decrease_socio AFTER INSERT ON SOCIO
+EXECUTE PROCEDURE new_register();
 
+-- TRIGGER 3
+CREATE OR REPLACE FUNCTION new_register() RETURNS TRIGGER AS $new_register$
+    BEGIN
+        UPDATE PRODUCTO 
+				SET NEW.PRECIO = PRECIO * 0.9
+				WHERE STOCK > 100;
+    END;
+$new_register$ LANGUAGE plpgsql;
+     
 
+CREATE TRIGGER discount_if_stock_high AFTER INSERT ON SOCIO
+EXECUTE PROCEDURE new_register();
 
-/*TRIGGERS */
+-- TRIGGER 4
+CREATE OR REPLACE FUNCTION new_register() RETURNS TRIGGER AS $new_register$
+    BEGIN
+        UPDATE PAGO 
+				SET NEW.TARIFA = TARIFA * 0.75
+				WHERE TARIFA > 150;
+    END;
+$new_register$ LANGUAGE plpgsql;
+     
 
-/* aumentar el contador de socios de un gimnasio al insertar   */
-CREATE OR REPLACE FUNCTION increase_socio() returns TRIGGER as $new_register1$
-	BEGIN
-		ALTER TABLE gimnasio
-		SET Número_socios = Numero_socios + 1
-		WHERE Identificador = new.GIMNASIO_identificador
-	END;
-$new_register1$ LANGUAJE plpgsql;
+CREATE TRIGGER discount_high_tax AFTER INSERT ON SOCIO
+EXECUTE PROCEDURE new_register();
 
-CREATE TRIGGER trigger_increase_gym AFTER INSERT ON SUSCRITO
-FOR EACH ROW EXECUTE PROCEDURE new_register1();
+-- TRIGGER 5 
+CREATE OR REPLACE FUNCTION new_register() RETURNS TRIGGER AS $new_register$
+    BEGIN
+        DELETE FROM SUBSCRITO AS s
+				WHERE s.DNI = p.DNI AND 30 > CURRENT_DATE - (SELECT FECHA 
+																	 									 FROM PAGO AS p
+				);
+    END;
+$new_register$ LANGUAGE plpgsql;
+     
 
-/* disminuir el contador de socios de un gimnasio al insertar   */
-CREATE OR REPLACE FUNCTION decrease_socio() returns TRIGGER as $new_register2$
-	BEGIN
-		ALTER TABLE gimnasio
-		SET Número_socios = Numero_socios - 1
-		WHERE Identificador = old.GIMNASIO_identificador
-	END;
-$new_register2$ LANGUAJE plpgsql;
-
-CREATE TRIGGER trigger_decrease_gym AFTER UPDATE OR DELETE ON SUSCRITO
-FOR EACH ROW EXECUTE PROCEDURE new_register2();
-
-
-/* al insertar un usuario, su id_socio es el ultimo + 1  */
-CREATE TRIGGER socios 
-AFTER INSERT ON SOCIO
-BEGIN 
-	ALTER TABLE SOCIO 
-	SET new.NUMERO_SOCIO = 1 + (SELECT MAX(NUMERO_SOCIO) FROM SOCIO)
-END;
-
-
-
-
-
-
-
-
-
-/*
-CREATE FUNCTION public.last_updated() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-    NEW.last_update = CURRENT_TIMESTAMP;
-    RETURN NEW;
-END $$;
-
-CREATE TRIGGER last_updated BEFORE UPDATE ON public.actor FOR EACH ROW EXECUTE FUNCTION public.last_updated();
-
-
-
-
-DELIMITER $$ 
-
-USE  FINAL $$
-DROP TRIGGER IF EXISTS FINAL.ENVIO_AFTER_INSERT  $$
-USE  FINAL $$
-CREATE DEFINER = CURRENT_USER TRIGGER    FINAL.ENVIO_AFTER_INSERT  AFTER INSERT ON  ENVIO  FOR EACH ROW
-BEGIN
-	UPDATE PEDIDO SET PEDIDO.Coste_Total = PEDIDO.Coste_Productos + new.Coste WHERE NEW.PEDIDO_Num_Pedido = PEDIDO.Num_Pedido AND NEW.PEDIDO_Usuario_DNI = PEDIDO.Usuario_DNI;
-END$$
-
-DELIMITER ;
-*/
+CREATE TRIGGER end_subscription AFTER INSERT ON SOCIO
+EXECUTE PROCEDURE new_register();
