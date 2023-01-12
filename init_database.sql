@@ -99,11 +99,12 @@ CREATE TABLE IF NOT EXISTS Producto (
  */
 
 CREATE TABLE IF NOT EXISTS Asistencia (
-   dni_socio VARCHAR(9) PRIMARY KEY,
+   id_gimnasio INT PRIMARY KEY,
+   id_socio INT,
    fecha DATE NOT NULL,
    hora_entrada TIME NOT NULL,
    hora_salida TIME NOT NULL,
-   FOREIGN KEY (dni_socio) REFERENCES Socio (dni)
+   FOREIGN KEY (id_gimnasio) REFERENCES Gimnasio (id)
 );
 
 /* 
