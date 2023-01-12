@@ -20,12 +20,12 @@ CHECK (Salario > 0);
 
 ALTER TABLE asistencia
 ADD CONSTRAINT check_asistencia
-CHECK (Fecha_salida > Fecha_entrada);
+CHECK (Hora_salida > Hora_entrada);
 
 ALTER TABLE clase
 ADD CONSTRAINT clase_schedule
-CHECK (Horario_fin > Horario_inicio);
+CHECK (Hora_fin > Hora_inicio);
 
 ALTER TABLE monitor
 ADD CONSTRAINT monitor_schedule
-CHECK (Hora_inicio > Hora_salida);
+CHECK (Hora_entrada < Hora_salida);
